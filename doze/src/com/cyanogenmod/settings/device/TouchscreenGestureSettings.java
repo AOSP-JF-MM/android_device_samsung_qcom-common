@@ -24,60 +24,33 @@ import android.provider.Settings;
 
 public class TouchscreenGestureSettings extends PreferenceFragment {
 
-    private static final String KEY_AMBIENT_DISPLAY_ENABLE = "ambient_display_enable";
     private static final String KEY_HAND_WAVE = "gesture_hand_wave";
-    private static final String KEY_GESTURE_POCKET = "gesture_pocket";
     private static final String KEY_PROXIMITY_WAKE = "proximity_wake_enable";
 
-    private SwitchPreference mAmbientDisplayPreference;
     private SwitchPreference mHandwavePreference;
-    private SwitchPreference mPocketPreference;
     private SwitchPreference mProximityWakePreference;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.gesture_panel);
-        boolean dozeEnabled = isDozeEnabled();
-        mAmbientDisplayPreference =
-            (SwitchPreference) findPreference(KEY_AMBIENT_DISPLAY_ENABLE);
-        // Read from DOZE_ENABLED secure setting
-        mAmbientDisplayPreference.setChecked(dozeEnabled);
-        mAmbientDisplayPreference.setOnPreferenceChangeListener(mAmbientDisplayPrefListener);
+
         mHandwavePreference =
             (SwitchPreference) findPreference(KEY_HAND_WAVE);
-        mHandwavePreference.setEnabled(dozeEnabled);
         mHandwavePreference.setOnPreferenceChangeListener(mProximityListener);
-        mPocketPreference =
-            (SwitchPreference) findPreference(KEY_GESTURE_POCKET);
-        mPocketPreference.setEnabled(dozeEnabled);
         mProximityWakePreference =
             (SwitchPreference) findPreference(KEY_PROXIMITY_WAKE);
         mProximityWakePreference.setOnPreferenceChangeListener(mProximityListener);
     }
 
-    private boolean enableDoze(boolean enable) {
-        return Settings.Secure.putInt(getContext().getContentResolver(),
-                Settings.Secure.DOZE_ENABLED, enable ? 1 : 0);
-    }
+    @Override
+    public void onResume() {
+        super.onResume();
 
-    private boolean isDozeEnabled() {
-        return Settings.Secure.getInt(getContext().getContentResolver(),
-                Settings.Secure.DOZE_ENABLED, 1) != 0;
-    }
-
-    private Preference.OnPreferenceChangeListener mAmbientDisplayPrefListener =
-        new Preference.OnPreferenceChangeListener() {
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object newValue) {
-            boolean enable = (boolean) newValue;
-            boolean ret = enableDoze(enable);
-            if (ret) {
-                mHandwavePreference.setEnabled(enable);
-                mPocketPreference.setEnabled(enable);
-            }
-            return ret;
+        // If running on a phone, remove padding around the listview
+        if (!ScreenType.isTablet(getContext())) {
+            getListView().setPadding(0, 0, 0, 0);
         }
-    };
+    }
 
     private Preference.OnPreferenceChangeListener mProximityListener =
         new Preference.OnPreferenceChangeListener() {
