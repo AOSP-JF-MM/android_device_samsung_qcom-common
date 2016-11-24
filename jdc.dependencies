@@ -1,0 +1,12 @@
+[
+  {
+    "repository": "android_hardware_samsung",
+    "target_path": "hardware/samsung"
+    "branch":      "aosp-7.1.2"
+  },
+  {
+    "repository": "android_packages_resources_devicesettings",
+    "target_path": "packages/resources/devicesettings"
+    "branch":      "aosp-7.1.2"
+  }
+]
