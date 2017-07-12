@@ -45,11 +45,7 @@ public class TouchscreenGestureSettings extends PreferenceFragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        // If running on a phone, remove padding around the listview
-        if (!ScreenType.isTablet(getContext())) {
-            getListView().setPadding(0, 0, 0, 0);
-        }
+        getListView().setPadding(0, 0, 0, 0);
     }
 
     private Preference.OnPreferenceChangeListener mProximityListener =
